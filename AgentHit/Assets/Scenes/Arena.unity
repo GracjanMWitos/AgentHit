@@ -7165,6 +7165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2905c2bb045f5d1469deccaf5939969b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawns: []
+  timer: 0
   min_timeBetweenSpawns: 2
   max_timeBetweenSpawns: 10
   maxAgentNumber: 30
@@ -7178,7 +7180,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2096479982}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.97027886, y: 0.4655897, z: -2.317028}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
