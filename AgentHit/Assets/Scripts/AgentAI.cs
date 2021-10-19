@@ -6,7 +6,7 @@ public class AgentAI : MonoBehaviour
 {
     #region Assignment
     Rigidbody2D agentRigidbody2D;
-    //GameController gameController;
+    GameController gameController;
     #endregion
 
     #region Variables
@@ -19,12 +19,12 @@ public class AgentAI : MonoBehaviour
     void Awake()
     {
         agentRigidbody2D = GetComponent<Rigidbody2D>();
-        //gameController = GameObject.Find("GameController").GetComponent<GameController>();
+        gameController = GameObject.Find("GameController").GetComponent<GameController>();
         float x = Random.Range(-1f, 1f);
         float y = Random.Range(-1f, 1f);
         moveDirection = new Vector3(x, y, 0f).normalized;
         print(moveDirection);
-        agentRigidbody2D.AddForce(moveDirection/200);
+        agentRigidbody2D.AddForce(moveDirection/100);
 
     }
 
@@ -36,7 +36,7 @@ public class AgentAI : MonoBehaviour
         }
         if (hp <= 0)
         {
-            
+            gameController.currentAgentNumber--;
             Destroy(gameObject);
         }
     }
