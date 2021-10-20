@@ -8,10 +8,19 @@ public class GameController : MonoBehaviour
     #region Assignment
     GameObject[] spawns;
     GameControls inputActions;
-    TMPro.TextMeshProUGUI textMeshProUGUI;
+    TMPro.TextMeshProUGUI agentDataText;
+    TMPro.TextMeshProUGUI buttonClickText;
     [SerializeField] Rigidbody2D agentRigidbody2D;
+    private void Awake()
+    {
+        inputActions = new GameControls();
+        inputActions.Player.Interaction.performed += ctx => Interaction();
+        agentDataText = GameObject.Find("AgentDataText").GetComponent<TMPro.TextMeshProUGUI>();
+        buttonClickText = GameObject.Find("DisplayText").GetComponent<TMPro.TextMeshProUGUI>();
+    }
     #endregion
-
+    #region Variables
+    [Space]
     float timer;
 
     [SerializeField] float min_timeBetweenSpawns;
@@ -25,19 +34,14 @@ public class GameController : MonoBehaviour
     public int nextAgentNumber;
     Vector3 mousePosition;
 
-    public string[] maleNames = { "Liam", "Noah", "Oliver", "Elijah", "William", "James", "Benjamin", "Lucas", "Henry", "Alexander" };
-    public string[] famaleNames = { "Olivia", "Emma", "Ava", "Charlotte", "Sophia", "Amelia", "Isabella", "Mia", "Evelyn", "Harper" };
-    public string[] surnames = {"Smith", "Brown", "Wilson", "Thomson", "Robertson", "Cambell", "Stewart", "Anderson", "Scott",
-                                "Reid", "Murray", "Taylor", "Clark", "Mitchell", "Ross", "Walker", "Peterson", "Morrison", "Fraser",
-                                "White", "Jones", "Dickson", "Henderson", "Hamilton", "Johnson", "Martin", "Duncan", "Hunter"};
-    public string[] sexes = { "Male", "Famale" };
-    private void Awake()
-    {
-        inputActions = new GameControls();
-        inputActions.Player.Interaction.performed += ctx => Interaction();
-        textMeshProUGUI = GameObject.Find("AgentDataText").GetComponent<TMPro.TextMeshProUGUI>();
-    }
-
+    [HideInInspector] public string[] maleNames = { "Liam", "Noah", "Oliver", "Elijah", "William", "James", "Benjamin", "Lucas", "Henry", "Alexander" };
+    [HideInInspector] public string[] famaleNames = { "Olivia", "Emma", "Ava", "Charlotte", "Sophia", "Amelia", "Isabella", "Mia", "Evelyn", "Harper" };
+    [HideInInspector] public string[] surnames = {"Smith", "Brown", "Wilson", "Thomson", "Robertson", "Cambell", "Stewart", "Anderson", "Scott",
+                                                "Reid", "Murray", "Taylor", "Clark", "Mitchell", "Ross", "Walker", "Peterson", "Morrison", "Fraser",
+                                                "White", "Jones", "Dickson", "Henderson", "Hamilton", "Johnson", "Martin", "Duncan", "Hunter"};
+    [HideInInspector] public string[] sexes = { "Male", "Famale" };
+    string displayText = "";
+    #endregion
     private void Start()
     {
         spawns = GameObject.FindGameObjectsWithTag("Respawn");
@@ -52,10 +56,12 @@ public class GameController : MonoBehaviour
     {
 
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePosition), Vector2.zero);
-        AgentAI hittedObject = hit.collider.gameObject.GetComponent<AgentAI>();
-        if (hittedObject.tag == "Agent")
-            textMeshProUGUI.text = "Agent " + hittedObject.agentNumber + "\nName: " + hittedObject.agentName + "\nSex: " + hittedObject.agentSex
-                + "\nAge: " + hittedObject.agentAge + "\nHP: " + hittedObject.healthPoints;
+        if (hit.collider.gameObject.tag == "Agent")
+        {
+            AgentAI hittedObject = hit.collider.gameObject.GetComponent<AgentAI>();
+            agentDataText.text = "Agent " + hittedObject.agentNumber + "\nName: " + hittedObject.agentName + "\nSex: " + hittedObject.agentSex
+                                + "\nAge: " + hittedObject.agentAge + "\nHP: " + hittedObject.healthPoints;
+        }
         else return;
     }
     void SpawnsAgent()
@@ -74,6 +80,25 @@ public class GameController : MonoBehaviour
             timer = timeBetweenSpawns;
             currentAgentCount++;
         }
+    }
+    public void DisplayText()
+    {
+        for (int i=1; i<101; i++)
+        {
+            if (i % 3 == 0 && i % 5 != 0)
+                displayText = displayText.ToString() + i.ToString() + " Marko, ";
+
+            if (i % 5 == 0 && i % 3 != 0)
+                displayText = displayText.ToString() + i.ToString() + " Polo, \n";
+
+            if (i % 3 == 0 && i % 5 == 0)
+                displayText = displayText.ToString() + i.ToString() + "MarkoPolo, \n";
+
+            if (i % 3 != 0 && i % 5 != 0) 
+                displayText = displayText.ToString() + i.ToString() + ", ";
+
+        }
+        buttonClickText.text = displayText;
     }
     #region OnEnable OnDisable
     void OnEnable()
