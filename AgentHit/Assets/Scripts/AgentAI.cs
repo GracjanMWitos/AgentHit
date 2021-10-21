@@ -18,12 +18,13 @@ public class AgentAI : MonoBehaviour
     #region Assignment
     Rigidbody2D agentRigidbody2D;
     GameController gameController;
-
+    Transform highlightingTransform;
 
     void Awake()
     {
         agentRigidbody2D = GetComponent<Rigidbody2D>();
         gameController = GameObject.Find("GameController").GetComponent<GameController>();
+        highlightingTransform = GameObject.Find("[Sprite] Highlighting").transform;
         Movement();
         SetPersonalData();
     }
@@ -35,6 +36,7 @@ public class AgentAI : MonoBehaviour
     void SetPersonalData()
     {
         #region AgentNumber
+
         int number = gameController.nextAgentNumber;
         if (number < 10)
             agentNumber = "00" + number;
@@ -46,6 +48,7 @@ public class AgentAI : MonoBehaviour
         #endregion
 
         #region AgentSex AgentName AgentAge
+
         agentSex = gameController.sexes[Random.Range(0, gameController.sexes.Length)];
 
         if (agentSex == "Male")
@@ -70,6 +73,9 @@ public class AgentAI : MonoBehaviour
             gameController.currentAgentCount--;
             Destroy(gameObject);
         }
+        if (agentNumber == gameController.highlightedAgentNumber)
+            highlightingTransform.position = this.transform.position;
+
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
