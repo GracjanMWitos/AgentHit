@@ -43,7 +43,6 @@ public class GameController : MonoBehaviour
     [HideInInspector] public int currentAgentCount;
     [HideInInspector] public int nextAgentNumber;
     [HideInInspector] public string highlightedAgentNumber = "start";
-    public string aname;
 
     string displayText = "";
     [HideInInspector] public string[] maleNames = { "Liam", "Noah", "Oliver", "Elijah", "William", "James", "Benjamin", "Lucas", "Henry", "Alexander" };
@@ -69,27 +68,26 @@ public class GameController : MonoBehaviour
     {
         audioSource.PlayOneShot(mouseClickClip);
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePosition), Vector2.zero);
-
         if (hit.collider.gameObject.tag == "Agent")
         {
             AgentAI hittedObject = hit.collider.gameObject.GetComponent<AgentAI>();
-            if (aname != hittedObject.agentName)
+            if (highlightedAgentNumber != hittedObject.agentNumber)
             {
                 agentDataText.text = "Agent " + hittedObject.agentNumber +
                 "\nName: " + hittedObject.agentName +
                 "\nSex: " + hittedObject.agentSex +
                 "\nAge: " + hittedObject.agentAge +
                 "\nHP: " + hittedObject.healthPoints;
-                aname = hittedObject.agentName;
+                highlightedAgentNumber = hittedObject.agentNumber;
             }
-            else if (name == hittedObject.agentName)
+            else if (highlightedAgentNumber == hittedObject.agentNumber)
             {
                 agentDataText.text = "Agent " +
                 "\nName: " +
                 "\nSex: " +
                 "\nAge: " +
                 "\nHP: ";
-                name = " ";
+                highlightedAgentNumber = "start";
                 highlightingObjectTransform.position = new Vector3(40f, 40f, 0f);
             }
         }

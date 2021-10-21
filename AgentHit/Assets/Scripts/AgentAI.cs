@@ -89,7 +89,7 @@ public class AgentAI : MonoBehaviour
     }
     void Highlighting()
     {
-        if (agentName == gameController.aname)
+        if (agentNumber == gameController.highlightedAgentNumber)
             highlightingTransform.position = transform.position;
     }
     private void OnTriggerEnter2D(Collider2D collision)
