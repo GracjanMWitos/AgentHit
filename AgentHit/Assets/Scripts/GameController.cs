@@ -13,6 +13,8 @@ public class GameController : MonoBehaviour
     TMPro.TextMeshProUGUI buttonClickText;
 
     [SerializeField] Rigidbody2D agentRigidbody2D;
+    [SerializeField] AudioClip mouseClickClip;
+    AudioSource audioSource;
     Transform highlightingObjectTransform;
     private void Awake()
     {
@@ -26,8 +28,10 @@ public class GameController : MonoBehaviour
         timer = Random.Range(min_timeBetweenSpawns, max_timeBetweenSpawns);
 
         highlightingObjectTransform = GameObject.Find("[Sprite] Highlighting").transform;
+        audioSource = GetComponent<AudioSource>();
     }
     #endregion
+
     #region Variables
     [Space]
     [Header("Time Between Spawns")]
@@ -38,7 +42,8 @@ public class GameController : MonoBehaviour
     [SerializeField] int maxAgentNumber;
     [HideInInspector] public int currentAgentCount;
     [HideInInspector] public int nextAgentNumber;
-     public string highlightedAgentNumber = "start";
+    [HideInInspector] public string highlightedAgentNumber = "start";
+    public string aname;
 
     string displayText = "";
     [HideInInspector] public string[] maleNames = { "Liam", "Noah", "Oliver", "Elijah", "William", "James", "Benjamin", "Lucas", "Henry", "Alexander" };
@@ -53,6 +58,7 @@ public class GameController : MonoBehaviour
     float timer;
     #endregion
 
+    #region AgentSpawning Interactions
     void Update()
     {
         SpawnsAgent();
@@ -61,28 +67,29 @@ public class GameController : MonoBehaviour
     }
     void Interaction()
     {
-
+        audioSource.PlayOneShot(mouseClickClip);
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(mousePosition), Vector2.zero);
+
         if (hit.collider.gameObject.tag == "Agent")
         {
             AgentAI hittedObject = hit.collider.gameObject.GetComponent<AgentAI>();
-            if (highlightedAgentNumber != hittedObject.agentNumber)
+            if (aname != hittedObject.agentName)
             {
                 agentDataText.text = "Agent " + hittedObject.agentNumber +
                 "\nName: " + hittedObject.agentName +
                 "\nSex: " + hittedObject.agentSex +
                 "\nAge: " + hittedObject.agentAge +
                 "\nHP: " + hittedObject.healthPoints;
-                highlightedAgentNumber = hittedObject.agentNumber;
+                aname = hittedObject.agentName;
             }
-            else if (highlightedAgentNumber == hittedObject.agentNumber)
+            else if (name == hittedObject.agentName)
             {
                 agentDataText.text = "Agent " +
                 "\nName: " +
                 "\nSex: " +
                 "\nAge: " +
                 "\nHP: ";
-                highlightedAgentNumber = "start";
+                name = " ";
                 highlightingObjectTransform.position = new Vector3(40f, 40f, 0f);
             }
         }
@@ -125,6 +132,8 @@ public class GameController : MonoBehaviour
         }
         buttonClickText.text = displayText;
     }
+    #endregion
+
     #region OnEnable OnDisable
     void OnEnable()
     {

@@ -5,13 +5,13 @@ using UnityEngine;
 public class AgentAI : MonoBehaviour
 {
     #region Variables
-    public string agentNumber;
-    public string agentName;
-    public string agentSex;
-    public int agentAge;
-    public int healthPoints = 3;
+    [HideInInspector] public string agentNumber;
+    [HideInInspector] public string agentName;
+    [HideInInspector] public string agentSex;
+    [HideInInspector] public int agentAge;
+    [HideInInspector] public int healthPoints = 3;
 
-    [SerializeField] Vector3 moveDirection;
+    Vector3 moveDirection;
     float timer;
     #endregion
 
@@ -25,15 +25,16 @@ public class AgentAI : MonoBehaviour
         agentRigidbody2D = GetComponent<Rigidbody2D>();
         gameController = GameObject.Find("GameController").GetComponent<GameController>();
         highlightingTransform = GameObject.Find("[Sprite] Highlighting").transform;
-        Movement();
-        SetPersonalData();
+        Move();
+        SetAgentData();
     }
-    void Movement()
+    #region Movement and Agent data update
+    void Move()
     {
         moveDirection = new Vector3(Random.Range(-100f, 100f), Random.Range(-100f, 100f), 0f).normalized;
         agentRigidbody2D.AddForce(moveDirection / 60);
     }
-    void SetPersonalData()
+    void SetAgentData()
     {
         #region AgentNumber
 
@@ -61,32 +62,42 @@ public class AgentAI : MonoBehaviour
     }
     #endregion
 
+    #endregion
+
+    #region Agent's Interactions
     private void Update()
     {
-
         if (timer > 0) 
         {
             timer -= Time.deltaTime;
         }
-        if (healthPoints <= 0)
-        {
-            gameController.currentAgentCount--;
-            Destroy(gameObject);
-        }
-        if (agentNumber == gameController.highlightedAgentNumber)
-            highlightingTransform.position = this.transform.position;
-
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Agent") && timer <= 0) 
-        {
-            Damage();
-        }
+        KillAgent();
+        Highlighting();
     }
     void Damage()
     {
         healthPoints -= 1;
         timer = 0.01f;
     }
+    void KillAgent()
+    {
+        if (healthPoints <= 0)
+        {
+            gameController.currentAgentCount--;
+            Destroy(gameObject);
+        }
+    }
+    void Highlighting()
+    {
+        if (agentName == gameController.aname)
+            highlightingTransform.position = transform.position;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Agent") && timer <= 0)
+        {
+            Damage();
+        }
+    }
+    #endregion
 }
